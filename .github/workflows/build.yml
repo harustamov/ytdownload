@@ -37,7 +37,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-          cache: 'npm'
 
       - name: Install Python (for node-gyp)
         uses: actions/setup-python@v4
@@ -64,7 +63,7 @@ jobs:
           yt-dlp --version
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Build Electron app (Linux)
         if: runner.os == 'Linux'
@@ -84,36 +83,39 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: List build artifacts
+      - name: List build artifacts (Linux/macOS)
+        if: runner.os != 'Windows'
         run: ls -la dist/
+        continue-on-error: true
+
+      - name: List build artifacts (Windows)
+        if: runner.os == 'Windows'
+        run: dir dist
+        continue-on-error: true
 
       - name: Upload artifacts (Linux)
         if: runner.os == 'Linux'
         uses: actions/upload-artifact@v3
         with:
           name: youtube-downloader-linux
-          path: |
-            dist/*.AppImage
-            dist/*.deb
-            dist/*.rpm
+          path: dist/
+          if-no-files-found: warn
 
       - name: Upload artifacts (Windows)
         if: runner.os == 'Windows'
         uses: actions/upload-artifact@v3
         with:
           name: youtube-downloader-windows
-          path: |
-            dist/*.exe
-            dist/*.msi
+          path: dist/
+          if-no-files-found: warn
 
       - name: Upload artifacts (macOS)
         if: runner.os == 'macOS'
         uses: actions/upload-artifact@v3
         with:
           name: youtube-downloader-macos
-          path: |
-            dist/*.dmg
-            dist/*.zip
+          path: dist/
+          if-no-files-found: warn
 
   release:
     name: Create Release
