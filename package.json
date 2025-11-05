@@ -1,17 +1,62 @@
 {
   "name": "youtube-downloader",
   "version": "1.0.0",
-  "description": "Simple YouTube video downloader web application",
-  "main": "server.js",
+  "description": "YouTube video downloader desktop application",
+  "main": "main.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "build": "electron-builder",
+    "build:win": "electron-builder --win",
+    "build:mac": "electron-builder --mac",
+    "build:linux": "electron-builder --linux",
+    "build:all": "electron-builder -mwl",
+    "pack": "electron-builder --dir"
   },
-  "keywords": ["youtube", "downloader", "video"],
+  "keywords": ["youtube", "downloader", "video", "electron", "desktop"],
   "author": "",
   "license": "MIT",
   "dependencies": {
     "express": "^4.18.2",
     "youtube-dl-exec": "^2.4.6",
     "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "electron": "^27.0.0",
+    "electron-builder": "^24.6.4"
+  },
+  "build": {
+    "appId": "com.ytdownloader.app",
+    "productName": "YouTube Downloader",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "server.js",
+      "public/**/*",
+      "node_modules/**/*"
+    ],
+    "mac": {
+      "category": "public.app-category.utilities",
+      "target": ["dmg", "zip"],
+      "icon": "assets/icon.icns"
+    },
+    "win": {
+      "target": ["nsis", "portable"],
+      "icon": "assets/icon.ico"
+    },
+    "linux": {
+      "target": ["AppImage", "deb", "rpm"],
+      "category": "Utility",
+      "icon": "assets/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
   }
 }

@@ -162,12 +162,47 @@
             font-size: 0.9em;
             color: #555;
         }
+
+        .folder-btn {
+            margin-top: 15px;
+            padding: 10px 20px;
+            background: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+            width: auto;
+        }
+
+        .folder-btn:hover {
+            background: #1976D2;
+        }
+
+        .header-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .header-text {
+            flex: 1;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>YouTube Video Downloader</h1>
-        <p class="subtitle">Enter a YouTube URL to download the video</p>
+        <div class="header-controls">
+            <div class="header-text">
+                <h1>YouTube Video Downloader</h1>
+                <p class="subtitle">Enter a YouTube URL to download the video</p>
+            </div>
+        </div>
+
+        <button class="folder-btn" id="openFolderBtn" onclick="openDownloadsFolder()">Open Downloads Folder</button>
 
         <form id="downloadForm">
             <div class="input-group">
@@ -239,6 +274,15 @@
         function showStatus(message, type) {
             statusDiv.innerHTML = message;
             statusDiv.className = 'status show ' + type;
+        }
+
+        // Open downloads folder (Electron API)
+        async function openDownloadsFolder() {
+            if (window.electronAPI && window.electronAPI.openDownloadsFolder) {
+                await window.electronAPI.openDownloadsFolder();
+            } else {
+                alert('This feature is only available in the desktop app');
+            }
         }
     </script>
 </body>
